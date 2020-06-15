@@ -19,23 +19,36 @@ app.get(`/`, function (req, res) {
 });
 
 app.get('/api/notes', (req, res) => {
-    fs.readFile('db.json', data => {
-        res.json(data);
+    fs.readFile('db/db.json', (err, data) => {
+        if (err) throw err;
+        res.json(JSON.parse(data));
     });
 });
 
 app.post('/api/notes', (req, res) => {
     const note = req.body;
+    
+    console.log(note);
 
-    fs.readFile('db.json', (err, data )=> {
+    fs.readFile('db/db.json', function(err, data) {
         if (err) throw err;
-        
-        const newNoteArray = data;
+        let existArray = JSON.parse(data);
 
-        newNoteArray.push(note);
+        console.log(existArray);
+        existArray.push(note);
+        console.log('New array:')
+        console.log(existArray);
 
-        fs.writeFile('./db/db.json', newNoteArray);
-    });
+        fs.writeFile('db/db.json', JSON.stringify(existArray), err => {
+            if (err) throw err;
+            console.log('File writing success');
+        });
+    })
+
+
+    // return the new note
+    res.json(note);
+    
 })
 
 app.listen(PORT, () => {
