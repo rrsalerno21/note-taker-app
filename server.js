@@ -28,19 +28,13 @@ app.get('/api/notes', (req, res) => {
 app.post('/api/notes', (req, res) => {
     const note = req.body;
     
-    console.log(note);
-
     fs.readFile('db/db.json', function(err, data) {
         if (err) throw err;
         let existArray = JSON.parse(data);
 
-        console.log(existArray);
-
         note.id = existArray.length + 1;
         
         existArray.push(note);
-        console.log('New array:')
-        console.log(existArray);
 
         fs.writeFile('db/db.json', JSON.stringify(existArray), err => {
             if (err) throw err;
@@ -57,23 +51,17 @@ app.post('/api/notes', (req, res) => {
 app.delete(`/api/notes/:id`, (req, res) => {
     let noteID = parseInt(req.params.id);
 
-    console.log(noteID);
-
     fs.readFile('db/db.json', function(err, data) {
         if (err) throw err;
         let existArray = JSON.parse(data);
 
         const result = existArray.filter(ele => ele.id !== noteID)
         
-        console.log('Filtered array:')
-        console.log(result);
 
         result.forEach((ele, i) => {
             ele.id = i + 1;
         })
         
-        console.log('New ID filter array:')
-        console.log(result);
 
         fs.writeFile('db/db.json', JSON.stringify(result), err => {
             if (err) throw err;
